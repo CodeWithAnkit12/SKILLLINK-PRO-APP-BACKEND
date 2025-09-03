@@ -1,9 +1,6 @@
 const users = [
-  {
-    email: "drunkenninja10665@gmail.com",
-    password: "$2a$10$....", // hashed password
-    premium: true            // ✅ Set to true manually
-  }
+  { id: 1, email: 'john@example.com', premium: false },
+  { id: 2, email: 'jane@example.com', premium: false },
 ];
 
 module.exports = users;

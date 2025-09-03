@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // ✅ Stripe secret key
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // 
 const users = require('../users');
-
-// ✅ Webhook Secret
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
+const PREMIUM_PRICE_ID = process.env.STRIPE_PRICE_ID; 
 
 /**
  * @route POST /api/stripe/webhook
@@ -27,6 +25,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) =>
     const customerEmail = session.customer_email;
 
     const user = users.find(u => u.email === customerEmail);
+
     if (user) {
       user.premium = true;
       console.log(`✅ Upgraded user ${customerEmail} to premium`);
@@ -35,7 +34,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) =>
     }
   }
 
-  res.json({ received: true });
+  res.status(200).json({ received: true });
 });
 
 router.post('/create-checkout-session', async (req, res) => {
@@ -45,7 +44,7 @@ router.post('/create-checkout-session', async (req, res) => {
       mode: 'subscription',
       line_items: [
         {
-          price: process.env.STRIPE_PRICE_ID,
+          price: PREMIUM_PRICE_ID,
           quantity: 1,
         },
       ],
